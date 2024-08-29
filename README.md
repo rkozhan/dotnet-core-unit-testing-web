@@ -1,7 +1,7 @@
 # ASP.NET Core Unit Testing
 
-## 1. (main branch) Console Applications
+## 1. [Console Applications](https://github.com/rkozhan/dotnet-core-unit-testing)
 
-## 2. (web branch) Web API Applications
+## 2. Web API Applications
 
-## 3. (mvc branch) MVC Applications
+## 3. [MVC Applications](https://github.com/rkozhan/dotnet-core-unit-testing-mvc)
