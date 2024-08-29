@@ -4,6 +4,7 @@ using Library.API.Data.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace LibraryAPI.Test
@@ -28,12 +29,12 @@ namespace LibraryAPI.Test
             //assert
             Assert.IsType<OkObjectResult>(result.Result);
 
-            var list = result.Result as OkObjectResult;
+            var list = result.Result as OkObjectResult;  // Cast the result to OkObjectResult to access the Value property
             Assert.IsType<List<Book>>(list.Value);
 
-            var lisrBooks = list.Value as List<Book>;
+            var listBooks = list.Value as List<Book>;    // Cast the Value to a List<Book> to check the count
 
-            Assert.Equal(5, lisrBooks.Count);
+            Assert.Equal(5, listBooks.Count);
         }
 
         [Theory]
@@ -77,10 +78,10 @@ namespace LibraryAPI.Test
             //assert
             Assert.IsType<CreatedAtActionResult>(createdResponce);
 
-            var item = createdResponce as CreatedAtActionResult;
+            var item = createdResponce as CreatedAtActionResult;   // Cast the response to CreatedAtActionResult to access the Value property
             Assert.IsType<Book>(item.Value);
 
-            var bookItem = item.Value as Book;
+            var bookItem = item.Value as Book;  // Cast the Value to Book to check the properties
             Assert.Equal(completeBook.Author, bookItem.Author);
             Assert.Equal(completeBook.Title, bookItem.Title);
             Assert.Equal(completeBook.Description, bookItem.Description);
@@ -97,6 +98,29 @@ namespace LibraryAPI.Test
             //assert
             Assert.IsType<BadRequestObjectResult>(badResponce);
         }
+
+        [Theory]
+        [InlineData("ab2bd817-98cd-4cf3-a80a-53ea0cd9c200", "ab2bd817-98cd-4cf3-a80a-53ea0cd9c111")]
+        public void RemoveBookByIdTest(string guid1, string guid2)
+        {
+            //arrange
+            var validGuid = new Guid(guid1);
+            var invalidGuid = new Guid(guid2);
+
+            //act
+            var notFoundResult = _controller.Remove(invalidGuid);
+            //assert
+            Assert.IsType<NotFoundResult>(notFoundResult);
+            Assert.Equal(5, _service.GetAll().Count());
+
+            //act
+            var okREsult = _controller.Remove(validGuid);
+            //assert
+            Assert.IsType<OkResult>(okREsult);
+            Assert.Equal(4, _service.GetAll().Count());
+
+        }
+
 
     }
 }
