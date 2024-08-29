@@ -36,5 +36,31 @@ namespace LibraryAPI.Test
             Assert.Equal(5, lisrBooks.Count);
         }
 
+        [Theory]
+        [InlineData("ab2bd817-98cd-4cf3-a80a-53ea0cd9c200", "ab2bd817-98cd-4cf3-a80a-53ea0cd9c111")]
+        public void GetBookByIdTest(string guid1, string guid2)
+        {
+            //arrange
+            var validGuid = new Guid(guid1);
+            var invalidGuid = new Guid(guid2);
+
+            //act
+            var notFoundResult = _controller.Get(invalidGuid);
+            var okREsult = _controller.Get(validGuid);
+
+            //assert
+            Assert.IsType<NotFoundResult>(notFoundResult.Result);
+
+            Assert.IsType<OkObjectResult>(okREsult.Result);
+
+            var item = okREsult.Result as OkObjectResult;
+            Assert.IsType<Book>(item.Value);
+
+            var bookItem = item.Value as Book;
+            Assert.Equal(validGuid, bookItem.Id);
+            //title
+            Assert.Equal("Managing Oneself", bookItem.Title);
+        }
+
     }
 }
